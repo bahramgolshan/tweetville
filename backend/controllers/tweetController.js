@@ -68,7 +68,7 @@ export const deleteTweet = async (req, res) => {
     if (tweet.user.toString() !== req.user.id)
       return res.status(403).json({ message: "Not authorized" });
 
-    await tweet.remove();
+    await tweet.deleteOne();
 
     res.status(200).json({ message: "Tweet deleted" });
   } catch (error) {
