@@ -9,7 +9,7 @@ export const signup = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { email, password } = req.body;
+  const { fullname, email, password } = req.body;
 
   try {
     const existingUser = await User.findOne({ email });
@@ -18,13 +18,23 @@ export const signup = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = await User.create({ email, password: hashedPassword });
-
-    const accessToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1d",
+    const user = await User.create({
+      fullname,
+      email,
+      password: hashedPassword,
     });
 
-    res.status(201).json({ token });
+    const accessToken = jwt.sign(
+      {
+        user: { _id: user._id, fullname: user.fullname, email: user.email },
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1d",
+      }
+    );
+
+    res.status(201).json({ accessToken });
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });
   }
@@ -46,9 +56,15 @@ export const login = async (req, res) => {
     if (!isMatch)
       return res.status(400).json({ message: "Invalid credentials" });
 
-    const accessToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1d",
-    });
+    const accessToken = jwt.sign(
+      {
+        user: { _id: user._id, fullname: user.fullname, email: user.email },
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1d",
+      }
+    );
 
     res.status(200).json({ accessToken });
   } catch (error) {
