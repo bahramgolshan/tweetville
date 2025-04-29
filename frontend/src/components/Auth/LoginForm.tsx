@@ -2,9 +2,11 @@ import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { login } from "../../models/auth";
+import { useAuth } from "../../contexts/AuthContext";
 
 const LoginForm = () => {
   const navigate = useNavigate();
+  const authCtx = useAuth();
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -28,7 +30,7 @@ const LoginForm = () => {
     try {
       const payload = { email, password };
       const data = await login(payload);
-
+      authCtx.login(data.accessToken);
       if (data.error) {
         toast.error(data.error);
       } else {

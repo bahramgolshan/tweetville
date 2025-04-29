@@ -1,25 +1,73 @@
-import React from "react";
+import React, { useRef, useCallback } from "react";
 import TweetItem from "./TweetItem";
-import { useTweets } from "../../services/useTweets";
+import { useTweetsQuery } from "../../services/useTweets";
 
-const TweetList: React.FC = () => {
-  const { data: tweets, isLoading, error } = useTweets();
+type TweetListProps = {
+  activeTab: "all" | "mine";
+};
+
+const TweetList: React.FC<TweetListProps> = ({ activeTab }) => {
+  const {
+    data,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isLoading,
+    isFetchingNextPage,
+  } = useTweetsQuery(activeTab);
+
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastTweetRef = useCallback(
+    (node: HTMLLIElement | null) => {
+      if (isLoading || isFetchingNextPage) return;
+      if (observer.current) observer.current.disconnect();
+
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasNextPage) {
+          fetchNextPage();
+        }
+      });
+
+      if (node) observer.current.observe(node);
+    },
+    [isLoading, isFetchingNextPage, fetchNextPage, hasNextPage]
+  );
 
   if (isLoading) return <p>Loading tweets...</p>;
   if (error) return <p>Error loading tweets</p>;
 
   return (
     <div>
-      <h2>Tweets</h2>
-      {tweets && tweets.length > 0 ? (
-        <ul>
-          {tweets.map((tweet) => (
-            <TweetItem key={tweet._id} tweet={tweet} />
-          ))}
-        </ul>
-      ) : (
-        <p>No tweets available</p>
-      )}
+      <h2>Showin {activeTab} Tweets</h2>
+      <ul>
+        {data?.pages.map((page, pageIndex) =>
+          page.tweets.map((tweet, tweetIndex) => {
+            if (
+              pageIndex === data.pages.length - 1 &&
+              tweetIndex === page.tweets.length - 1
+            ) {
+              return (
+                <TweetItem
+                  ref={lastTweetRef}
+                  key={tweet._id}
+                  tweet={tweet}
+                  activeTab={activeTab}
+                />
+              );
+            } else {
+              return (
+                <TweetItem
+                  key={tweet._id}
+                  tweet={tweet}
+                  activeTab={activeTab}
+                />
+              );
+            }
+          })
+        )}
+      </ul>
+
+      {isFetchingNextPage && <p>Loading more...</p>}
     </div>
   );
 };

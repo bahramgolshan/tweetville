@@ -1,10 +1,27 @@
 import { Tweet } from "../types/tweet";
 import { get, post, put, del } from "../helper/api_helper";
-import { RESOURCES } from "../constants/resources";
+import { RESOURCES } from "../config/constants";
 
-export const getTweets = async (): Promise<Tweet[]> => {
-  const response = await get(RESOURCES.TWEETS);
-  return response.data;
+interface GetTweetsParams {
+  pageParam?: number;
+  limit?: number;
+}
+export const getAllTweets = async ({ pageParam = 1, limit = 5  }: GetTweetsParams): Promise<{ tweets: Tweet[]; nextPage: number | null}> => {
+  const response = await get(`${RESOURCES.TWEETS}?page=${pageParam}&limit=${limit}`);
+  const data = response.data
+  return {
+    tweets: data.tweets,
+    nextPage: data.tweets.length < limit ? null : pageParam + 1,
+  };
+};
+
+export const getMyTweets = async ({ pageParam = 1, limit = 5  }: GetTweetsParams): Promise<{ tweets: Tweet[]; nextPage: number | null}> => {
+  const response = await get(`${RESOURCES.TWEETS}/my-tweets?page=${pageParam}&limit=${limit}`);
+  const data = response.data
+  return {
+    tweets: data.tweets,
+    nextPage: data.tweets.length < limit ? null : pageParam + 1,
+  };
 };
 
 export const getTweet = async (id: number): Promise<Tweet> => {
