@@ -18,7 +18,7 @@ const TweetList: React.FC<TweetListProps> = ({ activeTab }) => {
 
   const observer = useRef<IntersectionObserver | null>(null);
   const lastTweetRef = useCallback(
-    (node: HTMLLIElement | null) => {
+    (node: HTMLDivElement | null) => {
       if (isLoading || isFetchingNextPage) return;
       if (observer.current) observer.current.disconnect();
 
@@ -37,37 +37,33 @@ const TweetList: React.FC<TweetListProps> = ({ activeTab }) => {
   if (error) return <p>Error loading tweets</p>;
 
   return (
-    <div>
-      <h2>Showin {activeTab} Tweets</h2>
-      <ul>
-        {data?.pages.map((page, pageIndex) =>
-          page.tweets.map((tweet, tweetIndex) => {
-            if (
-              pageIndex === data.pages.length - 1 &&
-              tweetIndex === page.tweets.length - 1
-            ) {
-              return (
-                <TweetItem
-                  ref={lastTweetRef}
-                  key={tweet._id}
-                  tweet={tweet}
-                  activeTab={activeTab}
-                />
-              );
-            } else {
-              return (
-                <TweetItem
-                  key={tweet._id}
-                  tweet={tweet}
-                  activeTab={activeTab}
-                />
-              );
-            }
-          })
-        )}
-      </ul>
-
+    <div className="flex flex-col justify-center">
+      {data?.pages.map((page, pageIndex) =>
+        page.tweets.map((tweet, tweetIndex) => {
+          if (
+            pageIndex === data.pages.length - 1 &&
+            tweetIndex === page.tweets.length - 1
+          ) {
+            return (
+              <TweetItem
+                ref={lastTweetRef}
+                key={tweet._id}
+                tweet={tweet}
+                activeTab={activeTab}
+              />
+            );
+          } else {
+            return (
+              <TweetItem key={tweet._id} tweet={tweet} activeTab={activeTab} />
+            );
+          }
+        })
+      )}
       {isFetchingNextPage && <p>Loading more...</p>}
+      <hr className="mt-5 py-1" />
+      <p className="text-center text-xs text-mute-foregournd">
+        No more tweets!
+      </p>
     </div>
   );
 };

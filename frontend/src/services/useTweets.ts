@@ -32,7 +32,7 @@ export const useCreateTweet = () => {
 export const useUpdateTweet = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, text }: { id: number; text: string }) => updateTweet(id, text),
+    mutationFn: ({ id, text }: { id: string; text: string }) => updateTweet(id, text),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tweets", "all"] });
       queryClient.invalidateQueries({ queryKey: ["tweets", "mine"] });

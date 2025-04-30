@@ -24,7 +24,7 @@ export const getMyTweets = async ({ pageParam = 1, limit = 5  }: GetTweetsParams
   };
 };
 
-export const getTweet = async (id: number): Promise<Tweet> => {
+export const getTweet = async (id: string): Promise<Tweet> => {
   const response = await get(`${RESOURCES.TWEETS}/${id}`);
   return response.data;
 };
@@ -34,7 +34,7 @@ export const createTweet = async (text: string): Promise<Tweet> => {
   return response.data;
 };
 
-export const updateTweet = async (id: number, text: string): Promise<Tweet> => {
+export const updateTweet = async (id: string, text: string): Promise<Tweet> => {
   const response = await put(`${RESOURCES.TWEETS}/${id}`, { text });
   return response.data;
 };

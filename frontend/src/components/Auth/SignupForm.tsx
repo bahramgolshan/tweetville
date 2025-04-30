@@ -3,6 +3,18 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { signup } from "../../models/auth";
 import { useAuth } from "../../contexts/AuthContext";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Link } from "react-router-dom";
 
 const SignupForm = () => {
   const navigate = useNavigate();
@@ -54,33 +66,70 @@ const SignupForm = () => {
   };
 
   return (
-    <form onSubmit={formSubmit}>
-      <label htmlFor="fullname">Fullname</label>
-      <input
-        id="fullname"
-        type="text"
-        placeholder="enter fullname"
-        value={data.fullname}
-        onChange={(e) => setData({ ...data, fullname: e.target.value })}
-      />
-      <label htmlFor="email">Email</label>
-      <input
-        id="email"
-        type="email"
-        placeholder="enter email"
-        value={data.email}
-        onChange={(e) => setData({ ...data, email: e.target.value })}
-      />
-      <label htmlFor="password">Password</label>
-      <input
-        id="password"
-        type="password"
-        placeholder="enter password"
-        value={data.password}
-        onChange={(e) => setData({ ...data, password: e.target.value })}
-      />
-      <button type="submit">Submit</button>
-    </form>
+    <div className={cn("flex flex-col gap-6")}>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-2xl">Sign Up</CardTitle>
+          <CardDescription>Create your account in seconds</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={formSubmit}>
+            <div className="flex flex-col gap-6">
+              <div className="grid gap-2">
+                <Label htmlFor="fullname">Fullname</Label>
+                <Input
+                  name="fullname"
+                  id="fullname"
+                  type="text"
+                  placeholder="John Doe"
+                  value={data.fullname}
+                  onChange={(e) =>
+                    setData({ ...data, fullname: e.target.value })
+                  }
+                  required
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  name="email"
+                  id="email"
+                  type="email"
+                  placeholder="m@example.com"
+                  value={data.email}
+                  onChange={(e) => setData({ ...data, email: e.target.value })}
+                  required
+                />
+              </div>
+              <div className="grid gap-2">
+                <div className="flex items-center">
+                  <Label htmlFor="password">Password</Label>
+                </div>
+                <Input
+                  name="password"
+                  id="password"
+                  type="password"
+                  value={data.password}
+                  onChange={(e) =>
+                    setData({ ...data, password: e.target.value })
+                  }
+                  required
+                />
+              </div>
+              <Button type="submit" className="w-full">
+                Create Account
+              </Button>
+            </div>
+            <div className="mt-4 text-center text-sm">
+              Already have an account?{" "}
+              <Link to="/login" className="underline underline-offset-4">
+                Login
+              </Link>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
