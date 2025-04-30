@@ -24,7 +24,7 @@ interface TweetItemProps {
 const TweetItem = forwardRef<HTMLDivElement, TweetItemProps>(
   ({ tweet, activeTab }, ref) => {
     const [isEditing, setIsEditing] = React.useState(false);
-    const { mutate: deleteTweet, isPending } = useDeleteTweet();
+    const { mutate: deleteTweet } = useDeleteTweet();
     const { user } = useAuth();
 
     const isOwner = tweet.user._id === user?._id;
