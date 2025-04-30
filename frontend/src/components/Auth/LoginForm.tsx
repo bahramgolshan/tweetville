@@ -14,10 +14,12 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Loader2 } from "lucide-react";
 
 const LoginForm = () => {
   const navigate = useNavigate();
   const authCtx = useAuth();
+  const [isPending, setIsPending] = useState(false);
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -39,6 +41,7 @@ const LoginForm = () => {
     }
 
     try {
+      setIsPending(true);
       const payload = { email, password };
       const data = await login(payload);
       authCtx.login(data.accessToken);
@@ -48,9 +51,10 @@ const LoginForm = () => {
         toast.success("Logged in successfully!");
         navigate("/");
       }
-    } catch (error) {
-      console.log("Something went wrong!", error);
-      toast.error("Login failed. Please try again.");
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setIsPending(false);
     }
   };
 
@@ -93,8 +97,8 @@ const LoginForm = () => {
                   required
                 />
               </div>
-              <Button type="submit" className="w-full">
-                Login
+              <Button type="submit" className="w-full" disabled={isPending}>
+                {isPending ? <Loader2 className="animate-spin" /> : "Login"}
               </Button>
             </div>
             <div className="mt-4 text-center text-sm">

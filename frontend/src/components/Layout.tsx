@@ -2,23 +2,14 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 import { APP_NAME } from "@/config/constants";
+import { sliceString } from "@/util/strings";
 
 type LayoutProps = {
   children: React.ReactNode;
 };
 
 const Layout = ({ children }: LayoutProps) => {
-  const formatBrand = (input: string) => {
-    const midpoint = Math.ceil(input.length / 2);
-    const firstHalf = input.slice(0, midpoint);
-    const secondHalf = input.slice(midpoint);
-    return (
-      <>
-        <span>{firstHalf}</span>
-        <span className="text-primary">{secondHalf}</span>
-      </>
-    );
-  };
+  const { firstHalf, secondHalf } = sliceString(APP_NAME.toUpperCase());
 
   return (
     <div className="min-h-screen bg-gray-200 text-gray-900">
@@ -27,7 +18,8 @@ const Layout = ({ children }: LayoutProps) => {
         <div className="container mx-auto max-w-4xl px-4 py-3 flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <span className="font-bold text-xl ">
-              {formatBrand(APP_NAME.toUpperCase())}
+              <span>{firstHalf}</span>
+              <span className="text-primary">{secondHalf}</span>
             </span>
           </div>
 

@@ -15,10 +15,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 
 const SignupForm = () => {
   const navigate = useNavigate();
   const authCtx = useAuth();
+  const [isPending, setIsPending] = useState(false);
   const [data, setData] = useState({
     fullname: "",
     email: "",
@@ -47,6 +49,7 @@ const SignupForm = () => {
     }
 
     try {
+      setIsPending(true);
       const payload = { fullname, email, password };
       const data = await signup(payload);
       if (data.error) {
@@ -61,7 +64,8 @@ const SignupForm = () => {
       if (error.message) {
         toast.error(error.message);
       }
-      console.log("Something went wrong!", error);
+    } finally {
+      setIsPending(false);
     }
   };
 
@@ -116,8 +120,12 @@ const SignupForm = () => {
                   required
                 />
               </div>
-              <Button type="submit" className="w-full">
-                Create Account
+              <Button type="submit" className="w-full" disabled={isPending}>
+                {isPending ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  "Create Account"
+                )}
               </Button>
             </div>
             <div className="mt-4 text-center text-sm">

@@ -5,7 +5,8 @@ import {
   ReactNode,
   useEffect,
 } from "react";
-import { decodeToken, removeToken, saveToken } from "../helper/auth_helper";
+import { removeToken, saveToken } from "../helper/auth_helper";
+import { decodeToken } from "@/util/token";
 import { User } from "../types/user";
 
 interface AuthContextType {
