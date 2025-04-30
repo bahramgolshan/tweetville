@@ -28,6 +28,24 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/tweets", tweetRoutes);
 
+// 404 handler
+app.use((req, res, next) => {
+  const error = new Error("Not Found");
+  error.status = 404;
+  next(error);
+});
+
+// Global Error Handler
+app.use((err, req, res, next) => {
+  const status = err.status || 500;
+  const message =
+    process.env.NODE_ENV === "production"
+      ? "Something went wrong!!!"
+      : err.message;
+
+  res.status(status).json({ error: message });
+});
+
 // Connect to MongoDB and start server
 mongoose
   .connect(process.env.MONGO_URI)
