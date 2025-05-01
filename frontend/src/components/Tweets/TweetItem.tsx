@@ -95,7 +95,13 @@ const TweetItem = forwardRef<HTMLDivElement, TweetItemProps>(
             {isEditing ? (
               <TweetUpdate tweet={tweet} onCancel={() => setIsEditing(false)} />
             ) : (
-              <div className="flex-1 whitespace-pre-wrap p-4 text-sm">
+              <div
+                className="flex-1 whitespace-pre-wrap p-4 text-sm"
+                style={{
+                  overflow: "hidden",
+                  overflowWrap: "anywhere",
+                }}
+              >
                 {tweet.text}
               </div>
             )}
